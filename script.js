@@ -167,9 +167,9 @@ function getScore() {
 }
 
 function updateScore() {
-	shareElem.href = "https://twitter.com/home?status=Got%20a%20score%20of%20" + (score + sum) + "%20on%20%232048%20saming.fr/p/2048";
+	// shareElem.href = "https://twitter.com/home?status=Got%20a%20score%20of%20" + (score + sum) + "%20on%20%232048%20saming.fr/p/2048";
 
-	scoreElem.innerHTML = (score + sum) + "pts";
+	scoreElem.innerHTML =  (score + sum) + "pts";
 
 	updateBest();
 
@@ -180,25 +180,25 @@ function updateScore() {
 
 function getLevelText(lvl) {
 	if(lvl === 1) // 4+
-		return "Welcome newbie";
+		return "Bienvenido Notavo";
 	else if(lvl === 2) // 16+
-		return "Now you're playing";
+		return "Parece que estas jugando";
 	else if(lvl === 3) // 64+
-		return "Keep calm and press up";
+		return "Manten la calma y presiona hacia arriba";
 	else if(lvl === 4) // 256+
-		return "That's okay for a first time I guess";
+		return "Está bien para la primera vez, creo...";
 	else if(lvl === 5) // 1024+
-		return "That's okay for a second time I guess";
+		return "Mejor que la vez anterior";
 	else if(lvl === 6) // 4,096+
-		return "This is getting serious isn't it";
+		return "Se está poniendo interesante";
 	else if(lvl === 7) // 16,384+
 		return "Wow!";
 	else if(lvl === 8) // 65,536+
-		return "Can I have an autograph?";
+		return "¿Me das tu autografo?";
 	else if(lvl === 9) // 262,144+
-		return "You're not supposed to see this, stop";
+		return "No se supone que veas esto, por favor para";
 	else if(lvl === 10) // 1,048,576+
-		return "I'm pretty sure it's illegal to use supercomputers for that";
+		return "¿Sabías que es ilegal usar supercomputadoras para esto?";
 	else
 		return "";
 }
@@ -213,7 +213,7 @@ function updateLevel() {
 
 	var desc = getLevelText(level);
 
-	levelText.innerHTML = "Level " + level + (desc === "" ? "" : (" — " + desc));
+	levelText.innerHTML = "Nivel " + level + (desc === "" ? "" : (" — " + desc));
 	levelBar.style.width = (level * 10) + "%";
 }
 
@@ -232,7 +232,7 @@ function updateBest() {
 	if(best < (score + sum))
 		setBest(score + sum);
 
-	bestElem.innerHTML = best + "pts";
+	bestElem.innerHTML = "Record: " + best + "pts";
 }
 
 // GAME OVER FUNCTIONS
@@ -329,6 +329,7 @@ function init() {
 document.onkeydown = function(e) { keyPress(e.keyCode); }
 
 document.getElementsByTagName("header")[0].getElementsByTagName("a")[0].onclick = init;
+// document.getElementById("restart").addEventListener('click',() => init)
 
 touchElem.getElementsByTagName("div")[0].onclick = function() { moveGrid(1); }
 touchElem.getElementsByTagName("div")[1].onclick = function() { moveGrid(3); }
