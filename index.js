@@ -13,20 +13,10 @@ var level = 0,
 	levelText = infoText.getElementsByTagName("p")[0],
 	levelBar = document.getElementById("bar").getElementsByTagName("div")[0];
 
-var best = {
-	score: 0,
-	moves: 0
-},
+var best = 0,
 	bestElem = infoText.getElementsByTagName("p")[1];
 
 var shareElem = document.getElementById("share");
-
-// NUEVO CODIGO 
-var moveCount = 0;
-var totalMoveTime = 0;
-var levelTimes = []; // Arreglo para almacenar los tiempos de cada nivel
-
-
 
 // GRID FUNCTIONS
 
@@ -51,10 +41,6 @@ function updateGrid() {
 function moveGrid(direction) {
 	var x, y, dontTouch = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
 
-	if (gridElem.classList.contains("over")) {
-		// El juego está en estado de "game over", no se ejecuta el código de movimientos
-		return;
-	}
 	if(direction === 1) {
 		for(y = 3; y >= 0; y--) {
 			for(x = 0; x < 4; x++) {
@@ -120,32 +106,10 @@ function moveGrid(direction) {
 			}
 		}
 	}
-	
-	var moveStartTime = performance.now();
+
 	spawnRand();
 	updateGrid();
 	getScore();	
-	var moveEndTime = performance.now();
-	var moveTime = moveEndTime - moveStartTime;
-
-	moveCount++;
-	totalMoveTime += moveTime;
-
-	var averageMoveTime = calculateAverageMoveTime();
-	console.log("Promedio de tiempo entre movimientos: " + averageMoveTime + " ms");
-	console.log("Cantidad de movimientos: ", moveCount - 1)
-
-
-
-}
-
-function calculateAverageMoveTime() {
-	if (moveCount > 0) {
-		var averageMoveTime = totalMoveTime / moveCount;
-		return averageMoveTime.toFixed(2); // Redondea el promedio a 2 decimales
-	} else {
-		return 0;
-	}
 }
 
 // SCORE FUNCTIONS
@@ -242,63 +206,40 @@ function getLevelText(lvl) {
 function updateLevel() {
 	level = Math.floor(Math.log(score + sum) / Math.log(4));
 
-	levelTimes[level] = performance.now();
-
-
 	if(level > 10)
 		level = 10;
 	if(level < 0)
 		level = 0;
 
-	
 	var desc = getLevelText(level);
+
 	levelText.innerHTML = "Nivel " + level + (desc === "" ? "" : (" — " + desc));
 	levelBar.style.width = (level * 10) + "%";
-
 }
-// NUEVO
-function printLevelTimes() {
-	console.log("Tiempos de cada nivel:");
-  
-	for (var i = 1; i < levelTimes.length; i++) {
-	  console.log("Nivel " + i + ": " + levelTimes[i] + " ms");
-	}
-  }
 
 // BEST SCORE FUNCTIONS
 
 function getBest() {
-	best = {
-		score: localStorage.getItem("2048best") ,
-		moves: localStorage.getItem("2048bestMovesCount")
-	} 
-	;
+	best = localStorage.getItem("2048best");
 }
 
-function setBest(score, moves) {
-	localStorage.setItem("2048best", score);
-	localStorage.setItem("2048bestMovesCount", moves)
-	best = {
-		score: score,
-		moves: moves
-	};
+function setBest(n) {
+	localStorage.setItem("2048best", n);
+	best = n;
 }
 
 function updateBest() {
-	if(best.score < (score + sum) || best.score === (score + sum) && best.moves < moveCount) {
-		setBest(score + sum, moveCount + 1);
-	}
-	bestElem.innerHTML = "Record: " + best.score + "pts";
+	if(best < (score + sum))
+		setBest(score + sum);
+
+	bestElem.innerHTML = "Record: " + best + "pts";
 }
 
 // GAME OVER FUNCTIONS
 
 function gameOver() {
 	gridElem.setAttribute("class", "over");
-	console.log("GAME OVER");
-	printLevelTimes(); // Imprimir los tiempos de cada nivel
-    document.getElementById("movimientos").innerHTML="cantidad de movimientos: " + moveCount
-
+	console.log("LOL");
 }
 
 // UTIL FUNCTIONS
@@ -335,7 +276,7 @@ function spawnRand() {
 		grid[y][x] = randomValue;
 	} else {
 		if(!checkMovable()) {
-			gameOver();
+			// gameOver();
 		}
 	}
 }
@@ -361,7 +302,7 @@ function initScore() {
 
 function initBest() {
 	if(localStorage.getItem("2048best") === undefined)
-		setBest(0, 0);
+		setBest(0);
 
 	getBest();
 }
@@ -381,9 +322,6 @@ function init() {
 	initScore();
 	initBest();
 	initGrid();
-
-	moveCount = 0;
-	totalMoveTime = 0;
 }
 
 // INITIAL SETUP
@@ -391,6 +329,7 @@ function init() {
 document.onkeydown = function(e) { keyPress(e.keyCode); }
 
 document.getElementsByTagName("header")[0].getElementsByTagName("a")[0].onclick = init;
+// document.getElementById("restart").addEventListener('click',() => init)
 
 touchElem.getElementsByTagName("div")[0].onclick = function() { moveGrid(1); }
 touchElem.getElementsByTagName("div")[1].onclick = function() { moveGrid(3); }
