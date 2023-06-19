@@ -24,6 +24,8 @@ var shareElem = document.getElementById("share");
 // NUEVO CODIGO 
 var moveCount = 0;
 var totalMoveTime = 0;
+
+var averageMoveTime;
 var levelTimes = []; // Arreglo para almacenar los tiempos de cada nivel
 
 
@@ -131,7 +133,7 @@ function moveGrid(direction) {
 	moveCount++;
 	totalMoveTime += moveTime;
 
-	var averageMoveTime = calculateAverageMoveTime();
+	averageMoveTime = calculateAverageMoveTime();
 	console.log("Promedio de tiempo entre movimientos: " + averageMoveTime + " ms");
 	console.log("Cantidad de movimientos: ", moveCount - 1)
 
@@ -263,6 +265,7 @@ function printLevelTimes() {
 	for (var i = 1; i < levelTimes.length; i++) {
 	  console.log("Nivel " + i + ": " + levelTimes[i] + " ms");
 	}
+	localStorage.setItem("2048LevelTimes", JSON.stringify(levelTimes))
   }
 
 // BEST SCORE FUNCTIONS
@@ -271,13 +274,13 @@ function getBest() {
 	best = {
 		score: localStorage.getItem("2048best") ,
 		moves: localStorage.getItem("2048bestMovesCount")
-	} 
-	;
+	};
 }
 
 function setBest(score, moves) {
 	localStorage.setItem("2048best", score);
 	localStorage.setItem("2048bestMovesCount", moves)
+	localStorage.setItem("2048AverageMoveTime", averageMoveTime)
 	best = {
 		score: score,
 		moves: moves
@@ -298,6 +301,7 @@ function gameOver() {
 	console.log("GAME OVER");
 	printLevelTimes(); // Imprimir los tiempos de cada nivel
     document.getElementById("movimientos").innerHTML="cantidad de movimientos: " + moveCount
+	console.log("PROMEDIO DE TIEMPO ENTRE MOVIMIENTOS POST GAME OVER: ", averageMoveTime , " ms")
 
 }
 
